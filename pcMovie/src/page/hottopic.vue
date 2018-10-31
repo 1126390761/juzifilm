@@ -3,9 +3,16 @@
       <Header></Header>
       <Headerbar v-bind:mydata='barItem'></Headerbar>
       <div class="news-container">
-        <el-row :gutter="20">
-            <el-col :span="6"><div class="grid-content red"><h4>最新资讯</h4></div></el-col>
-            <el-col :span="6" :offset="5"><router-link to="/allnews" target="_blank" class="red">全部></router-link></el-col>
+        <el-row >
+            <el-col :span="5"><div class="grid-content red"><h4>最新资讯</h4></div></el-col>
+            <el-col :span="6" :offset="7"><router-link to="/allnews" target="_blank" class="red">全部></router-link></el-col>
+            <el-col :span="6" :pull="2"><div class="grid-content red"><h4>热门资讯</h4></div></el-col>
+        </el-row>
+        <el-row >
+          <el-col :span="5" :offset='1'><div class="grid-content onenews"><img src="../assets/logo.png" alt=""></div></el-col>
+          <el-col :span="5" ><div class="grid-content onenews"><img src="../assets/logo.png" alt=""></div></el-col>
+          <el-col :span="5" ><div class="grid-content onenews"><img src="../assets/logo.png" alt=""></div></el-col>
+          <el-col :span="5" ><div class="grid-content onenews"><img src="../assets/logo.png" alt=""></div></el-col>
         </el-row>
         <!-- <router-link to="/hottopic" target="_blank">{{msg}}</router-link>
     	  <h1>{{ msg }}</h1> -->
@@ -18,7 +25,7 @@ import headerbar from "@/components/headerbar";
 export default {
   data() {
     return {
-      barItem: [{linkto:'/hothome',title:'热点首页'},
+      barItem: [{linkto:'/hottopic',title:'热点首页'},
                 {linkto:'/news',title:'新闻资讯'},
                 {linkto:'/preview',title:'预告片'},
                 {linkto:'/pic',title:'精彩图集'}]
@@ -51,5 +58,16 @@ h4 {
 .red {
   color: #ef4238;
   text-decoration: none;
+}
+
+.onenews{
+  width: 230px;
+  height: 195px;
+  /* overflow: hidden; */
+}
+.onenews img{
+  width: 230px;
+  height: 129px;
+  /* overflow: hidden; */
 }
 </style>
