@@ -1,19 +1,29 @@
 //
 
 const express = require('express');
-
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const app = express();
+//CORS：允许跨域
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+});
 
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cookieParser(secret));
+
 
 // 数据库连接
 global.conn = mysql.createConnection({
-    host: 'orange',
+    host: '127.0.0.1',
     user: 'root',
     password: '',
     port: 3306,
@@ -21,19 +31,6 @@ global.conn = mysql.createConnection({
 });
 conn.connect();
 
-//session
-app.use(session({
-    secret:secret,
-    resave:true,
-    saveUninitialized:true,
-    cookie:{maxAge:30*24*3600*1000}
-}));
-
-
-
-global.upload = multer({
-    storage: storage
-});
 //文件上传
 const storage = multer.diskStorage({
     //file 上传上来的文件的相关信息
@@ -51,9 +48,14 @@ const storage = multer.diskStorage({
 global.upload = multer({
     storage: storage
 });
+
+app.post('/uploadMovimg', upload.single('images'), (req, res) => {
+    res.json(req.file);
+    console.log(req.file);
+});
 // 自己配置路由
-app.use('/',require('./module/xxy'));
+app.use('/', require('./modul/xxy/addMovie'));
 app.use('/uploads', express.static('uploads'));
 app.listen(81, () => {
-    console.log('http://orange:81/');
+    console.log('服务器地址:http://localhost:81');
 });

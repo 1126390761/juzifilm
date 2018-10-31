@@ -18,7 +18,28 @@
         <el-menu-item index="3" >榜单</el-menu-item>  
         <el-menu-item index="4" >热点</el-menu-item>  
     </el-menu>
-    <input type="text" class="header-search">
+    <div class="search">
+   <input type="text" class="header-search">
+     <el-button type="danger" icon=""><i class="el-icon-search" ></i>
+  </el-button>
+    </div>
+    
+    <div class="person">
+        <img src="@/assets/person.png" alt="">
+   <el-col :span="12" class="person-info">
+
+    <el-dropdown>
+      <span class="el-dropdown-link">
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>个人信息</el-dropdown-item>
+        <el-dropdown-item>退出登录</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+  </el-col>
+   
+    </div>
     
     </div>
   
@@ -44,8 +65,8 @@ export default {
 <style scoped>
 .header {
   position: relative;
-  width: 100%;
   box-shadow: 0px 2px 5px #ddd;
+  left: 0;
 }
 .header-logo{
     width: 133px;
@@ -83,12 +104,38 @@ export default {
 .el-menu.el-menu--horizontal{
     border: none;
 }
+.search {
+    position: absolute;
+    top: -10px;
+    right: 0px;
+}
 .header-search{
     position: absolute;
-    top: 25px;
+    top: 24px;
     right: 400px;
     width: 260px;
-    height: 25px;
-  
+    height: 36px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    outline: none;
+    text-indent: 20px;
+}
+.search .el-button{
+    border-radius: 30px;
+    position: absolute;
+    right: 400px;
+    top:25px;
+}
+.person img{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 100px;
+    top: 10px;;
+}
+.person-info{
+    position: absolute;
+    top: 20px;
+    right: -580px;
 }
 </style>
