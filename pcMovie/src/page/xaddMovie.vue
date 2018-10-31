@@ -23,13 +23,14 @@
       <el-checkbox :label="item" name="type" v-for="item in items" :key="item"></el-checkbox>
     </el-checkbox-group>
   </el-form-item>
-
-  <el-form-item label="是否上映" required>
-    <el-radio-group v-model="ruleForm.show">
-      <el-radio label="即将上映"></el-radio>
-      <el-radio label="上映"></el-radio>
-    </el-radio-group>
+  
+  <el-form-item label="影片情况" prop="situation">
+    <el-checkbox-group v-model="ruleForm.situation">
+      <el-checkbox :label="item" name="situation" v-for="item in stu" :key="item"></el-checkbox>
+    </el-checkbox-group>
   </el-form-item>
+
+
 
   <el-form-item label="添加时间" class="addTime" required>
     <el-col :span="11">
@@ -70,6 +71,7 @@
       return {
         items:["爱情", "喜剧", "动画", "剧情", "恐怖", "惊悚","科幻","动作","悬疑","犯罪","冒险","战争","奇幻","运动","家庭","古装","武侠","西部","历史","传记","歌舞","黑色电影","短片","记录片","其他"],
         region: [ "大陆", "美国", "韩国", "日本", "中国香港","中国台湾","泰国","印度","法国","英国","俄罗斯","意大利","西班牙","德国","波兰","澳大利亚","伊朗","其他"],
+        stu:[1,2,3],
         imageUrl:'',
         ruleForm: {
           name: '',
@@ -79,15 +81,15 @@
           region: '',
           date1: '',
           delivery: false,
-          show: '',
           type: [],
           desc: '',
-          imgUrl: ''
+          imgUrl: '',
+          situation:[]
         },
         rules: {
           name: [
             { required: true, message: '请输入电影名', trigger: 'blur' },
-            { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+            { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
           ],
           Ename: [
             { required: true, message: '请输入英文名', trigger: 'blur' },
@@ -104,12 +106,13 @@
           region: [
             { required: true, message: '请选择区域', trigger: 'change' }
           ],
+          situation: [
+            { type: 'array', required: true, message: '请至少选择一个电影状态', trigger: 'change' }
+          ],
           date1: [
             { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
           ],
-          show: [
-            { required: true, message: '请选择是否上映', trigger: 'change' }
-          ],
+          
           type: [
             { type: 'array', required: true, message: '请至少选择一个电影类型', trigger: 'change' }
           ],

@@ -19,9 +19,9 @@ router.post('/addMovie', (req, res) => {
     let date = new Date(d.date1);
     let date_value=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     console.log(date_value);
-    let sql = `INSERT INTO movies(m_ename, m_name,m_type,m_area,m_date,m_socre,m_intor,m_director,m_mainpic,m_show) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+    let sql = `INSERT INTO movies(m_ename, m_name,m_type,m_area,m_date,m_socre,m_intor,m_director,m_mainpic,m_state) VALUES (?,?,?,?,?,?,?,?,?,?)`;
     //let sql= 'UPDATE books SET bname = ?,kinds=?,auther=?,readnum=?,wordnum=?  WHERE bid = ? AND status=1';
-    let data = [d.Ename, d.name,d.type,d.region,date_value, d.score,d.desc,d.author,d.imgUrl,d.show];
+    let data = [d.Ename, d.name,d.type,d.region,date_value, d.score,d.desc,d.author,d.imgUrl,d.situation];
     conn.query(sql, data, (err, result) => {
         if (err) {
             console.log(err);
@@ -34,5 +34,20 @@ router.post('/addMovie', (req, res) => {
     })
 })
 
+// 查询电影并且展示
+router.post('/show', (req, res) => {
+    let sql = `SELECT * FROM MOVIES limit 0,8`;
+    conn.query(sql,(err, result) => {
+        if (err) {
+            console.log(err);
+            res.json({r:'db_err'});
+            return ;
+        }
+        console.log("db_success");
+        res.json({
+            r: result
+        });
+    })
+})
 
 module.exports = router;
