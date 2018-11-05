@@ -8,14 +8,17 @@
   background-color="#47464a"
   text-color="#999"
   active-text-color="#ef4238">
-  <el-menu-item :span="6" class="grid-content" v-for="(item,ind) in mydata" :key="ind" :index="ind+1+''"><router-link :to="item.linkto">{{item.title}}</router-link></el-menu-item>
+  <el-menu-item :span="6" class="grid-content" v-for="(play,ind) in playstates" :key="ind" :index="ind+1+''"  @click="changeMovie(play.state)">
+     {{play.title}}
+  </el-menu-item>
 </el-menu>
   </div>
 </template>
 
 <script>
   export default {
-    props:['mydata'],
+    name: "Headerbar",
+    props:["playstates"],
     data() {
       return {
         isActive:true,
@@ -28,8 +31,12 @@
       this.isActive=!this.isActive;
     },
     handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-      }
+        // console.log(key, keyPath);
+    },
+    changeMovie(t){
+      // console.log(t);
+      this.$emit('getType', t);
+    }
   },
 };
 </script>
@@ -41,15 +48,21 @@ li{
   border-bottom: none !important;
   margin-left: 30px !important;
   padding: 0 !important;
-}
-
-li a{
   font-size: 16px;
   text-decoration: none;
   display: inline-block;
   width: 104px;
   height: 60px;
+  text-align: center;
 }
+
+/* li a{
+  font-size: 16px;
+  text-decoration: none;
+  display: inline-block;
+  width: 104px;
+  height: 60px;
+} */
 
 ul{
   display: flex;

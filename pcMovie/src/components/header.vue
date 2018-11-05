@@ -2,7 +2,7 @@
     <div class="header">
     
         <div class="header-logo">
-            <img src="@/assets/filmlogo.png" alt="">
+            <img src="@/assets/orange.png" alt="">
             <span>橘子电影</span>
         </div>
     <el-menu
@@ -75,16 +75,19 @@ export default {
     
 }
 .header-logo img{
-    width: 50px;
-    height: 50px;
+    width: 120px;
+    height: 84px;
     position: relative;
-    top: 10px;
+    top: -2px;
+    left: 15px;
 }
 .header-logo span{
     position: absolute;
-    top: 20px;
-    left: 56px;
-    color: #f40;
+    top: 15px;
+    left: 110px;
+    color: #f8931f;
+    font-size: 26px;
+    font-weight: 600;
 }
 .el-menu {
     width: 400px;
