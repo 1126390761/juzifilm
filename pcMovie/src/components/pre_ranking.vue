@@ -1,13 +1,13 @@
 <template>
     <div class="ranking-box-wrapper">
-  <div class="panel">
-    <div class="panel-header">
-      <span class="panel-title">
-        <span class="textcolor_red">热门预告片</span>
-      </span>
-    </div>
-    <div class="panel-content">
-            <ul class="ranking-wrapper ranking-box">
+    <div class="panel">
+        <div class="panel-header">
+            <span class="panel-title">
+                <span class="textcolor_red">热门预告片</span>
+            </span>
+        </div>   
+<div class="panel-content">
+<ul class="ranking-wrapper ranking-box">
     <li class="ranking-item ranking-top ranking-index-1" v-if="ind<5" v-for="(item,ind) in listData" :key="item['m_mainpic']">
        <router-link :to="{name:'predetails',params: {pid: item['pid']}}">
         <div class="ranking-top-left">
@@ -30,8 +30,8 @@
     </li>
 
 </ul>
+</div>
     </div>
-  </div>
     </div>
 </template>
 <script>

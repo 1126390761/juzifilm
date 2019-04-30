@@ -11,14 +11,14 @@
         <form action="" id="login" name="login">
           <div class="info info1">
             <img src="../assets/usename.png" alt="">
-            <input type="text" name="username" id="" :placeholder="ph1" v-model="formdata.username">
+            <input type="text" name="username" :placeholder="ph1" v-model="formdata.username">
           </div>
           <div class="info info2">
             <img src="../assets/pwd.png" alt="">
-            <input type="password" name="pwd" id="" :placeholder="ph2" v-model="formdata.pwd">
+            <input type="password" name="pwd"  :placeholder="ph2" v-model="formdata.pwd">
           </div>
           <div class="rem">
-            <input type="checkbox" name="rem" id="">记住我
+            <input type="checkbox" name="rem">记住我
             <span>登录遇到问题？</span>
           </div>
           <button type="button" class="login" @click="formsubmit">登录</button>
@@ -67,7 +67,7 @@ export default {
       _this.pwderr=false;
       _this.axios({
         method: "POST",
-        url: _this.url+"/hottopic/login",
+        url: "/hottopic/login",
         data:_this.formdata,
         transformRequest: [function (data) {
                 let ret = ''

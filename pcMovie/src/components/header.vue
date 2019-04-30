@@ -6,26 +6,24 @@
             <span>橘子电影</span>
         </div>
     <el-menu
-        :default-active="activeIndex"
+        :default-active="this.$route.path"
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
         background-color="#fff"
         text-color="#333"
-        active-text-color="#f40">
-        <el-menu-item index="1" >首页</el-menu-item>
-        <el-menu-item index="2" >电影</el-menu-item>
-        <el-menu-item index="3" >榜单</el-menu-item>  
-        <el-menu-item index="4" >热点</el-menu-item>  
+        active-text-color="#f40" router>
+        <el-menu-item v-for="(item,ind) in navList" :key="ind" :index="item.name+''">{{item.navItem}}</el-menu-item>
     </el-menu>
     <div class="search">
-   <input type="text" class="header-search">
-     <el-button type="danger" icon=""><i class="el-icon-search" ></i>
+   <input type="text" class="header-search"  v-model="input">
+     <el-button type="danger" icon="" size="medium"><router-link :to="{path:'/search',query: {value: input}}"><i class="el-icon-search" ></i></router-link>
   </el-button>
     </div>
     
     <div class="person">
-        <img src="@/assets/person.png" alt="">
+        <img :src="img" alt="" v-if="img">
+        <img src="../assets/person.png" alt="" v-else>
    <el-col :span="12" class="person-info">
 
     <el-dropdown>
@@ -33,14 +31,12 @@
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>个人信息</el-dropdown-item>
-        <el-dropdown-item>退出登录</el-dropdown-item>
+        <el-dropdown-item><span @click="session">个人信息</span></el-dropdown-item>
+        <el-dropdown-item><router-link to="/login">退出登录</router-link></el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </el-col>
-   
     </div>
-    
     </div>
   
 
@@ -48,23 +44,71 @@
 
 <script>
 export default {
+    props:['imgurl'],
   data() {
     return {
-        activeIndex: '1',
+        navList:[
+            {name:'/',navItem:'首页'},
+            {name:'/Lmovie',navItem:'电影'},
+            {name:'/list',navItem:'榜单'},
+            {name:'/hottopic',navItem:'热点'}
+        ],
+        input:'',
+        img: this.imgurl,
+        hassession:false
     };
   },
     methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
+      },
+
+      session(){
+          if(this.hassession){
+              window.location.href='/user'
+          }else{
+              window.location.href='/login'
+          }
+      },
+      getHead(){
+        let _this=this;
+        _this.axios({
+			method: "get",
+            url: '/getHeadimg'
+        }).then(response => {
+            console.log(response.data)
+            _this.img=response.data.r[0].headimg;
+            _this.hassession=true;
+           
+        }).catch(response => {
+            console.log("请求失败");
+            });
       }
-    }
+    },
+    created() {
+        this.getHead()
+    },
+
 };
 </script>
 
 
 <style scoped>
+a{
+    text-decoration: none;
+}
+.el-icon-search{
+    color: #fff;
+    font-size: 15px;
+}
+.ablock{
+    display: block;
+    width: 40px;
+    height: 60px;
+}
 .header {
   position: relative;
+  min-width:1200px;
   box-shadow: 0px 2px 5px #ddd;
   left: 0;
 }
@@ -135,6 +179,7 @@ export default {
     position: absolute;
     right: 100px;
     top: 10px;;
+    border-radius: 50%;
 }
 .person-info{
     position: absolute;

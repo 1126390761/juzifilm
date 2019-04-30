@@ -96,7 +96,7 @@ export default {
   },
   methods: {},
   components: {
-    Header: header,
+    'Header': header,
     Headerbar: headerbar,
     RankingList: rankingList,
     Preranking:preranking,

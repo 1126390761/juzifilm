@@ -6,12 +6,12 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const svgCaptcha=require('svg-captcha');
-global.md5=require("md5");
+global.md5 = require('md5');
 const app = express();
 //CORS：允许跨域
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "http://peanut:82");//PC端
+    //res.header("Access-Control-Allow-Origin", "http://peanut:8080");//APP端
     res.header("Access-Control-Allow-Credentials", true);
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -19,8 +19,9 @@ app.use(function(req, res, next) {
     next();
 });
 
+
 let secret = 'sports.app.myweb.www';
-// 启用中间件
+// 启用中间件;
 app.use(cookieParser(secret));
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -68,15 +69,22 @@ const storage = multer.diskStorage({
 global.upload = multer({
     storage: storage
 });
-
+// 上传电影海报图片
 app.post('/uploadMovimg', upload.single('images'), (req, res) => {
+    res.json(req.file);
+    console.log(req.file);
+});
+// 上传头像图片
+app.post('/uploadHeadimg',upload.single('images'), (req, res) => {
     res.json(req.file);
     console.log(req.file);
 });
 // 自己配置路由
 app.use('/', require('./modul/xxy/addMovie'));
-app.use('/uploads', express.static('uploads'));
 app.use('/hottopic',require('./modul/ch/hottopic'));
+app.use("/lt", require("./modul/lt/lmovie"));
+app.use("/ticket",require("./modul/buyticket/buyticket"));
+app.use('/uploads', express.static('uploads'));
 app.listen(81, () => {
     console.log('服务器地址:http://localhost:81');
 });

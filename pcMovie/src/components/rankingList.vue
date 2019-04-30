@@ -3,7 +3,7 @@
   <div class="panel">
     <div class="panel-header">
       <span class="panel-title">
-        <span class="textcolor_red">今日热门</span>
+        <span class="textcolor_red">{{title}}</span>
       </span>
     </div>
     <div class="panel-content">
@@ -44,7 +44,7 @@
 </template>
 <script>
     export default {
-   props:['listData'],
+   props:['listData','title'],
 
   data() {
     return {
@@ -295,5 +295,8 @@ p {
 .ind{
     
     color: #999 !important;
+}
+.ranking-item:hover{
+    background-color: rgba(221, 221, 221, 0.349);
 }
 </style>

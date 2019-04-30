@@ -7,7 +7,7 @@
       <!-- 电影种类 -->
       <Headerbar :playstates="moviekinds" @getType="changeType"></Headerbar>
       <el-main>
-        <lmovie-nav @types="changeKinds" @areas="changeAreas"></lmovie-nav>
+        <lmovie-nav @types="changeKinds" @areas="changeAreas" @alltype="changeAlltype"></lmovie-nav>
         <lmovie-pic :picture="moviespic"></lmovie-pic>
         <div>
           <el-pagination
@@ -83,20 +83,26 @@ export default {
     changeKinds(t){
       console.log("m:"+t);
       this.m_type=t;
+      this.currentpage=1;
     },
     changeAreas(a){
       console.log("A:"+a);
       this.m_area=a;
+      this.currentpage=1;
     },
     currentPage(p){
       console.log(p);
       this.currentpage=p;
+    },
+    changeAlltype(){
+      // console.log(at);
       this.m_type='';
       this.m_area='';
+      this.currentpage=1;
     },
     getMovie(){
     let This = this;
-        This.http
+        This.axios
           .get("http://localhost:81/lt/lmovie", {
             params: {
               m_state:This.m_state,

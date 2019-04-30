@@ -2,16 +2,8 @@ const express = require('express');
 const async=require('async');
 const router = express.Router();
 
-router.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
 
-//渲染界面时请求数据
+//渲染热点界面时请求数据
 router.get("/news",(req,res)=>{
         let data={};
         async.series({
@@ -47,6 +39,37 @@ router.get("/news",(req,res)=>{
             data.preranking=result.preranking;
             res.json(data);
         });
+});
+
+//响应资讯列表的请求
+let start=0;
+router.get("/newslist",(req,res)=>{
+    // console.log(req.query.nid);
+    start=0;
+    let sql = `SElECT * FROM hottopic limit ${start},7`;
+    conn.query(sql,(err, result)=>{
+        if(err){
+            console.log(err);
+            res.json({r:'db_err'});
+            return ;
+        }
+        res.json(result);
+    });
+});
+
+//获取更多news
+router.get("/morenews",(req,res)=>{
+    // console.log(req.query.nid);
+    start+=7;
+    let sql = `SElECT * FROM hottopic limit ${start},7`;
+    conn.query(sql,(err, result)=>{
+        if(err){
+            console.log(err);
+            res.json({r:'db_err'});
+            return ;
+        }
+        res.json(result);
+    });
 });
 
 //渲染资讯详情界面
@@ -94,8 +117,40 @@ router.get("/predetails",(req,res)=>{
 });
 
 
+//渲染APP端预告片详情页面
+router.get("/apppre",(req,res)=>{
+    let data={};
+    let cate=0;
+    async.series({
+        findpre:function (callback) {
+            let sql = `SElECT * FROM previews2 WHERE pid= ${req.query.pid}`;
+            conn.query(sql,(err,result)=>{
+                cate=result[0].cate;
+                callback(null, result);
+            });
+        },
+        findcates:function (callback) {
+            let sql = `SElECT * FROM previews2 WHERE cate= ${cate} AND pid not in (${req.query.pid})`;
+            conn.query(sql,(err,result)=>{
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                callback(null, result);
+            });
+        }
+    },(err,result)=>{
+        //上面的回调函数就是将上面的各个操作步骤中查询出的数据以属性的形式存放到最终的这个result对象中
+        data.pre=result.findpre[0];
+        data.cates=result.findcates;
+        res.json(data);
+    });
+});
+
+
+//响应登录界面请求
 router.post('/login',(req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     let d=req.body;
     let sql = 'SELECT * FROM user WHERE status = 1 AND username = ?';
     conn.query(sql, d.username, (err, result)=>{
@@ -114,6 +169,7 @@ router.post('/login',(req,res)=>{
         req.session.uid = result[0].uid;
         req.session.username = result[0].username;
         req.session.headimg = result[0].headimg;
+        // console.log(req.session);
         //更新状态
         let sql = 'UPDATE user SET loginnum = loginnum + 1, lasttimes = ? WHERE aid = ?';
         conn.query(sql, [new Date().toLocaleString(), result[0].aid], (err, result)=>{
