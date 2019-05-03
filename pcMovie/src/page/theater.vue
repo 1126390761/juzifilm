@@ -5,21 +5,6 @@
         <div class="select">
           <el-container>  
             <div class="theaterkinds">
-              <!-- 日期 -->
-              <ul >
-                <li>
-                  <div class="movie-title">日期 ：</div>
-                  <ul class="title-kinds">
-                  <!--
-                      动态绑定属性 对第一项添加active类名
-                  -->
-                      <li v-for="(t,ind) in filmdate" :class="ind==whichday?'active':''" :key="t" @click="changeDate(t,ind)">
-                        {{t}}
-                      </li>
-                  </ul>
-                </li>  
-              </ul>
-
               <div style="clear:both"></div>
 
               <!-- 影城 -->
@@ -32,16 +17,16 @@
                         全部
                       </li>
                     -->
-                      <li v-for="(theater,ind) in theater" :class="theater==theaterName?'active':''" :key="theater" @click="changeTheater(theater,ind)">
+                      <li v-for="(theater,ind) in theater" :class="theater==theaterName?'active':''" :key="ind" @click="changeTheater(theater,ind)">
                         {{theater}}
                       </li>
                   </ul>
                 </li>  
               </ul>
 
-               <div style="clear:both"></div>
+              <div style="clear:both"></div>
 
-               <!-- 行政区 -->
+              <!-- 行政区 -->
               <ul >
                 <li>
                   <div class="movie-title">行政区 ：</div>
@@ -51,50 +36,68 @@
                           全部
                       </li>
                     -->
-                      <li v-for="(area,ind) in area" :class="area==areaName?'active':''" :key="area" @click="changeArea(area,ind)">
+                      <li v-for="(area,ind) in area" :class="area==areaName?'active':''" :key="ind" @click="changeArea(area,ind)">
                          {{area}}
                       </li>
                   </ul>
                 </li>  
               </ul>
+
               <div style="clear:both"></div>
+
+              <!-- 日期 -->
+              <ul >
+                <li>
+                  <div class="movie-title">日期 ：</div>
+                  <ul class="title-kinds">
+                  <!--
+                      动态绑定属性 对第一项添加active类名
+                  -->
+                      <li v-for="(day,ind) in filmdate" :class="day.cdate==selectedDay?'active':''" :key="ind" @click="changeDate(day)">
+                        {{day.cdate}}
+                      </li>
+                  </ul>
+                </li>  
+              </ul>
             </div> 
           </el-container>
-            <div class="theaterlistbar">影院列表</div>
-            <div class="theaterlist" v-for="(item,ind) in theaterList" :key="ind" :index="item.tid+''">
-              <div class="theateritem">
-                <span class="theatername">{{item.t_name}}</span>
-                <router-link :to="{path:'/selectfield', query:{mid:getMovieInfo.mid,whichday:whichday,tid:item.tid}}" target="_blank">
-                  <span class="buyTicket">特惠购买</span>
-                </router-link>
-                <span class="qi">起</span><span class="price">￥39</span>
-                <span class="theaterinfo">地址：{{item.t_adress}}</span>
-              </div>
+          <div class="theaterlistbar">影院列表</div>
+          <div class="theaterlist" v-for="(item,ind) in theaterList" :key="ind" :index="item.theater_id+''">
+            <div class="theateritem">
+              <span class="theatername">{{item.theater_name}}</span>
+              <!-- <router-link :to="{path:'/selectfield', query:{mid:getMovieInfo.mid,selectedDay:selectedEday,theater_id:item.theater_id}}" target="_blank"> -->
+                <span class="buyTicket" @click="selectFiled(item.theater_id)">特惠购买</span>
+              <!-- </router-link> -->
+              <span class="qi">起</span><span class="price">￥39</span>
+              <span class="theaterinfo">地址：{{item.theater_adress}}</span>
             </div>
           </div>
+          <ListFooter></ListFooter>
         </div>  
-        
     </div>
 </template>
 
 <script>
 import header from "@/components/header";
 import introduction from "@/components/movieIntorduce/introduction";
+import listfooter from '@/components/listfooter';
 import moment from 'moment';
 export default {
   name: "App",
   components: {
       Header: header,
       Introduction: introduction,
+      ListFooter:listfooter
   },
   data() {
       return {
             getMovieInfo:{mid:''},
             movieData:{},
             buyTicket:false,
-            filmdate: [],
-            whichday:0,
-            theater: ["全部","横店电影城", "耀莱成龙国际影城", "太平洋电影城", "攀枝花影城","联娱国际影城"],
+            filmdate: [{cdate:"全部",date:'alldate'}],
+            selectedDay:"全部",
+            selectedEday:'alldate',
+            theater: ["全部","横店电影城", "耀莱成龙国际影城", "太平洋影城", "攀枝花影城","联娱国际影城"],
             theaterName:"全部",
             area: ["全部","东区", "西区","仁和区","米易县","盐边县"],
             areaName:"全部",
@@ -102,10 +105,8 @@ export default {
       };
   },
   created() {
-      let mid=this.$route.query.mid;
-      this.getMovieInfo.mid=mid;
-      this.getInfo();
-      this.getTime();
+      this.getMovieInfo.mid=this.$route.query.mid;
+      this.getInfo();     
       this.getTheater();
 
   },
@@ -134,52 +135,67 @@ export default {
 						console.log("请求失败");
             });
       },
-      getTime(){
-        // var now=moment().format("YYYY年MM月DD日"); 获取当前时间以YYYY年MM月DD日的形式
-        for(var i=0;i<7;i++)
-        {
-          var today=moment().add(i,'days').format("MM月DD日");
-          this.filmdate.push(today);
-        }
-      },
       getTheater(){
           let _this = this;
           _this.axios.get(_this.url+"/ticket/gettheater",{
             params:{
+              filmdate:_this.selectedDay,
               theater:_this.theaterName,
               area:_this.areaName,
-              //date:_this.whichday
+              mid:_this.getMovieInfo.mid,
+              selectedDay:_this.selectedEday
             } 
         })
         .then(res => {
-          console.log("数据请求成功");
-          _this.theaterList=res.data;
-           //console.log(_this.theaterList);
-        })
-        .catch(res => {
-          console.log("请求失败");
+          console.log("影院数据请求成功");
+          console.log(res.data);           
+          _this.theaterList=res.data.theaterList;
+          _this.filmdate.length=1;//清空上次请求到的日期
+          //let temp=[];
+          // res.data.timeList.forEach(element => {//遍历返回的获取到的日期数据
+          //   let date=element.time.split(' ');//将字符串分割为[YYYY-MM-DD,HH:MM]
+          //   date[0]=moment(date[0]).format("MM月DD日");//将YYYY-MM-DD转换成MM月DD日
+          //   if(temp.indexOf(date[0])==-1){//检查中是否存在那一天，不存在则添加
+          //       temp.push(date[0]);
+          //   }
+          //_this.filmdate=_this.filmdate.concat(temp);//两个数组拼接并赋给日期数组
+          //});
+          res.data.timeList.forEach(element => {//遍历返回的获取到的日期数据,并添加到日期数组里
+              _this.filmdate.push(element);
+          });  
+
+          //console.log(_this.filmdate);
+          
+          //  var now=moment('2019-05-01').format("YYYY年MM月DD日");
+          //  console.log(now);
+        }).catch(res => {
+          console.log("请求失败",res);
         });
       },
-      changeDate(t,ind) {
-        console.log(t,ind);
-        this.whichday=ind;
-        //this.$emit("date",t);
+      changeDate(day) {
+        console.log(day);
+        this.selectedDay=day.cdate;
+        this.selectedEday=day.date;
+        this.getTheater();
+
       },
       changeTheater(theater) {
-        console.log(typeof(theater));
         this.theaterName=theater;
         this.getTheater();
-        //this.$emit("theater",a);
       },
       changeArea(area) {
         console.log(area);
         this.areaName=area;
         this.getTheater();
-        //this.$emit("area",a);
       },
-      allTypes() {
-        // console.log(at);
-        this.$emit("alltype");
+      selectFiled(theater_id) {
+        let _this=this;
+        if(_this.selectedEday=='alldate'){
+          alert('请选择日期哦亲');
+          return;
+        }else{
+          window.location.href=`/selectfield?mid=${_this.getMovieInfo.mid}&selectedDay=${_this.selectedEday}&theater_id=${theater_id}`
+        }
       }
 
    }
@@ -187,7 +203,6 @@ export default {
 </script>
 
 <style scoped>
-  <style scoped>
 .el-container {
   background-color: #ffffff;
   color: #333;
@@ -293,5 +308,8 @@ export default {
   font-size:14px;
   box-shadow: 0 2px 10px -2px #f03d37;
   float:right;
+}
+.buyTicket:hover{
+  cursor: pointer;
 }
 </style>

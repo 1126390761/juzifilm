@@ -202,8 +202,6 @@ router.get('/getHeadimg', (req, res) => {
 
 //获取用户信息
 router.get('/getinfo', (req, res) => {
-
-  
     // let sql = `INSERT INTO user(username, sex,headimg,birthday,interest,moto) VALUES (?,?,?,?,?,?)`;
     let sql= `SELECT * FROM USER  WHERE uid = 1 AND status=1`;
     // let data = [];
